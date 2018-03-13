@@ -1,0 +1,39 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=libiconv
+pkgver=1.15
+pkgrel=1
+epoch=
+pkgdesc="GNU unicode and encoding conversion library"
+arch=('x86_64')
+url="https://www.gnu.org/software/libiconv"
+license=('GPL')
+groups=('base-devel')
+depends=()
+makedepends=('m4' 'libtool')
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+options=('!docs')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('ace8b5f2db42f7b3b3057585e80d9808')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+
+# vim:set ts=2 sw=2 et:

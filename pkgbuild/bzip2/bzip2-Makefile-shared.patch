@@ -1,0 +1,26 @@
+--- Makefile-libbz2_so.orig	2018-01-02 13:29:39.000000000 -0500
++++ Makefile-libbz2_so	2018-01-02 13:38:05.000000000 -0500
+@@ -35,13 +35,21 @@ OBJS= blocksort.o  \
+       bzlib.o
+ 
+ all: $(OBJS)
++ifeq "$(shell uname -s)" "Linux"
+ 	$(CC) -shared -Wl,-soname -Wl,libbz2.so.1.0 -o libbz2.so.1.0.6 $(OBJS)
+ 	$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.so.1.0.6
+ 	rm -f libbz2.so.1.0
+ 	ln -s libbz2.so.1.0.6 libbz2.so.1.0
++else
++	$(CC) -shared -Wl,-install_name -Wl,$(PREFIX)/lib/libbz2.1.0.dylib -o libbz2.1.0.6.dylib $(OBJS)
++	$(CC) $(CFLAGS) -o bzip2-shared bzip2.c libbz2.1.0.6.dylib
++	rm -f libbz2.1.0.dylib libbz2.dylib
++	ln -sf libbz2.1.0.6.dylib libbz2.1.0.dylib
++	ln -sf libbz2.1.0.dylib libbz2.dylib
++endif
+ 
+-clean: 
+-	rm -f $(OBJS) bzip2.o libbz2.so.1.0.6 libbz2.so.1.0 bzip2-shared
++clean:
++	rm -f $(OBJS) bzip2.o libbz2.*.dylib bzip2-shared
+ 
+ blocksort.o: blocksort.c
+ 	$(CC) $(CFLAGS) -c blocksort.c

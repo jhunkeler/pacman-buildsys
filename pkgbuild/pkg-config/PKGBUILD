@@ -1,0 +1,38 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=pkg-config
+pkgver=0.29.2
+pkgrel=1
+epoch=
+pkgdesc="Compilation configuration utility"
+arch=('x86_64')
+url="https://www.freedesktop.org/wiki/Software/$pkgname"
+license=('GPL')
+groups=('base-devel')
+depends=()
+makedepends=('m4' 'libtool')
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+options=('!docs')
+source=("https://$pkgname.freedesktop.org/releases/$pkgname-$pkgver.tar.gz")
+md5sums=('f6e931e319531b736fadc017f470e68a')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX --with-internal-glib
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+# vim:set ts=2 sw=2 et:

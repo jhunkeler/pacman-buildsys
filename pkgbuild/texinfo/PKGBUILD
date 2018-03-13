@@ -1,0 +1,32 @@
+pkgname=texinfo
+pkgver=6.5
+pkgrel=1
+pkgdesc='Texinfo is the official documentation format of the GNU project'
+arch=('x86_64')
+url="https://www.gnu.org/software/$pkgname"
+license=('GPL3')
+groups=('base')
+depends=('libiconv')
+options=('!emptydirs')
+source=("https://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('3715197e62e0e07f85860b3d7aab55ed')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  # fails under OS X...
+  #make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+
+# vim:set ts=2 sw=2 et:

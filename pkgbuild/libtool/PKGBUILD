@@ -1,0 +1,32 @@
+pkgname=libtool
+pkgver=2.4.6
+pkgrel=1
+pkgdesc='A generic library support script'
+arch=(x86_64)
+url='http://www.gnu.org/software/libtool"'
+license=(GPL)
+groups=(base-devel)
+depends=(tar)
+makedepends=()
+provides=("libltdl=$pkgver")
+conflicts=('libltdl')
+replaces=('libltdl')
+source=("https://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('1bfb9b923f2c1339b4d2ce1807064aa5')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make check || :
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}

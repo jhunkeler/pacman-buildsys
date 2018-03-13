@@ -1,0 +1,11 @@
+--- unix/configure.orig	2018-01-20 23:57:20.000000000 -0500
++++ unix/configure	2018-01-21 00:05:42.000000000 -0500
+@@ -15123,7 +15123,7 @@ echo "$as_me: failed program was:" >&5
+ sed 's/^/| /' conftest.$ac_ext >&5
+ 
+ ( exit $ac_status )
+-tcl_cv_strtod_unbroken=broken
++tcl_cv_strtod_unbroken=ok
+ fi
+ rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+ fi

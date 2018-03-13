@@ -1,0 +1,39 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=xz
+pkgver=5.2.3
+pkgrel=1
+epoch=
+pkgdesc="XZ Utils is free general-purpose data compression \
+  software with a high compression ratio."
+arch=('x86_64')
+url="https://tukaani.org/$pkgname"
+license=('GPL')
+groups=('base-devel')
+depends=()
+makedepends=()
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+options=('!docs')
+source=("https://tukaani.org/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('60fb79cab777e3f71ca43d298adacbd5')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+# vim:set ts=2 sw=2 et:

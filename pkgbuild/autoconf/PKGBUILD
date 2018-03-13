@@ -1,0 +1,43 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=autoconf
+pkgver=2.69
+pkgrel=1
+epoch=
+pkgdesc="A GNU tool for automatically configuring source code"
+arch=('any')
+url="https://www.gnu.org/software/autoconf"
+license=('GPL')
+groups=('base-devel')
+depends=('m4')
+makedepends=()
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+noextract=()
+md5sums=('82d05e03b93e45f5a39b828dc9c6c29b')
+validpgpkeys=()
+
+build() {
+	cd "$pkgname-$pkgver"
+	./configure --prefix=$BUILD_PREFIX
+	make
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	#make -k check
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+        fix_rpath
+        rm -f ${pkgdir}/$BUILD_PREFIX/share/info/standards.info
+}

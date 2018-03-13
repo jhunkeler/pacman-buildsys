@@ -1,0 +1,85 @@
+--- Makefile.orig	2018-01-02 12:54:45.000000000 -0500
++++ Makefile	2018-01-02 13:13:29.000000000 -0500
+@@ -61,7 +61,7 @@ test: bzip2
+ 	./bzip2 -d  < sample1.bz2 > sample1.tst
+ 	./bzip2 -d  < sample2.bz2 > sample2.tst
+ 	./bzip2 -ds < sample3.bz2 > sample3.tst
+-	cmp sample1.bz2 sample1.rb2 
++	cmp sample1.bz2 sample1.rb2
+ 	cmp sample2.bz2 sample2.rb2
+ 	cmp sample3.bz2 sample3.rb2
+ 	cmp sample1.tst sample1.ref
+@@ -72,8 +72,8 @@ test: bzip2
+ install: bzip2 bzip2recover
+ 	if ( test ! -d $(PREFIX)/bin ) ; then mkdir -p $(PREFIX)/bin ; fi
+ 	if ( test ! -d $(PREFIX)/lib ) ; then mkdir -p $(PREFIX)/lib ; fi
+-	if ( test ! -d $(PREFIX)/man ) ; then mkdir -p $(PREFIX)/man ; fi
+-	if ( test ! -d $(PREFIX)/man/man1 ) ; then mkdir -p $(PREFIX)/man/man1 ; fi
++	if ( test ! -d $(PREFIX)/share/man ) ; then mkdir -p $(PREFIX)/share/man ; fi
++	if ( test ! -d $(PREFIX)/share/man/man1 ) ; then mkdir -p $(PREFIX)/share/man/man1 ; fi
+ 	if ( test ! -d $(PREFIX)/include ) ; then mkdir -p $(PREFIX)/include ; fi
+ 	cp -f bzip2 $(PREFIX)/bin/bzip2
+ 	cp -f bzip2 $(PREFIX)/bin/bunzip2
+@@ -83,12 +83,14 @@ install: bzip2 bzip2recover
+ 	chmod a+x $(PREFIX)/bin/bunzip2
+ 	chmod a+x $(PREFIX)/bin/bzcat
+ 	chmod a+x $(PREFIX)/bin/bzip2recover
+-	cp -f bzip2.1 $(PREFIX)/man/man1
+-	chmod a+r $(PREFIX)/man/man1/bzip2.1
++	cp -f bzip2.1 $(PREFIX)/share/man/man1
++	chmod a+r $(PREFIX)/share/man/man1/bzip2.1
+ 	cp -f bzlib.h $(PREFIX)/include
+ 	chmod a+r $(PREFIX)/include/bzlib.h
+ 	cp -f libbz2.a $(PREFIX)/lib
+-	chmod a+r $(PREFIX)/lib/libbz2.a
++	if ( test -f libbz2.dylib ) ; then cp -f libbz2*.dylib $(PREFIX)/lib ; fi
++	if ( test -f libbz2.*.so* ) ; then cp -f libbz2.*.so* $(PREFIX)/lib ; fi
++	chmod a+r $(PREFIX)/lib/lib*
+ 	cp -f bzgrep $(PREFIX)/bin/bzgrep
+ 	ln -s -f $(PREFIX)/bin/bzgrep $(PREFIX)/bin/bzegrep
+ 	ln -s -f $(PREFIX)/bin/bzgrep $(PREFIX)/bin/bzfgrep
+@@ -99,14 +101,14 @@ install: bzip2 bzip2recover
+ 	cp -f bzdiff $(PREFIX)/bin/bzdiff
+ 	ln -s -f $(PREFIX)/bin/bzdiff $(PREFIX)/bin/bzcmp
+ 	chmod a+x $(PREFIX)/bin/bzdiff
+-	cp -f bzgrep.1 bzmore.1 bzdiff.1 $(PREFIX)/man/man1
+-	chmod a+r $(PREFIX)/man/man1/bzgrep.1
+-	chmod a+r $(PREFIX)/man/man1/bzmore.1
+-	chmod a+r $(PREFIX)/man/man1/bzdiff.1
+-	echo ".so man1/bzgrep.1" > $(PREFIX)/man/man1/bzegrep.1
+-	echo ".so man1/bzgrep.1" > $(PREFIX)/man/man1/bzfgrep.1
+-	echo ".so man1/bzmore.1" > $(PREFIX)/man/man1/bzless.1
+-	echo ".so man1/bzdiff.1" > $(PREFIX)/man/man1/bzcmp.1
++	cp -f bzgrep.1 bzmore.1 bzdiff.1 $(PREFIX)/share/man/man1
++	chmod a+r $(PREFIX)/share/man/man1/bzgrep.1
++	chmod a+r $(PREFIX)/share/man/man1/bzmore.1
++	chmod a+r $(PREFIX)/share/man/man1/bzdiff.1
++	echo ".so man1/bzgrep.1" > $(PREFIX)/share/man/man1/bzegrep.1
++	echo ".so man1/bzgrep.1" > $(PREFIX)/share/man/man1/bzfgrep.1
++	echo ".so man1/bzmore.1" > $(PREFIX)/share/man/man1/bzless.1
++	echo ".so man1/bzdiff.1" > $(PREFIX)/share/man/man1/bzcmp.1
+ 
+ clean: 
+ 	rm -f *.o libbz2.a bzip2 bzip2recover \
+@@ -169,9 +171,9 @@ dist: check manual
+ 	   $(DISTNAME)/sample2.bz2 \
+ 	   $(DISTNAME)/sample3.bz2 \
+ 	   $(DISTNAME)/dlltest.c \
+-	   $(DISTNAME)/manual.html \
+-	   $(DISTNAME)/manual.pdf \
+-	   $(DISTNAME)/manual.ps \
++	   $(DISTNAME)/share/manual.html \
++	   $(DISTNAME)/share/manual.pdf \
++	   $(DISTNAME)/share/manual.ps \
+ 	   $(DISTNAME)/README \
+ 	   $(DISTNAME)/README.COMPILATION.PROBLEMS \
+ 	   $(DISTNAME)/README.XML.STUFF \
+@@ -195,7 +197,7 @@ dist: check manual
+ 	   $(DISTNAME)/bz-html.xsl \
+ 	   $(DISTNAME)/bzip.css \
+ 	   $(DISTNAME)/entities.xml \
+-	   $(DISTNAME)/manual.xml \
++	   $(DISTNAME)/share/manual.xml \
+ 	   $(DISTNAME)/format.pl \
+ 	   $(DISTNAME)/xmlproc.sh
+ 	gzip -v $(DISTNAME).tar

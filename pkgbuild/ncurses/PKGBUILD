@@ -1,0 +1,66 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=ncurses
+pkgver=6.0
+pkgrel=1
+epoch=
+pkgdesc="GNU curses library"
+arch=('x86_64')
+url="https://www.gnu.org/software/$pkgname"
+license=('GPL')
+groups=('base-devel')
+depends=('gettext')
+makedepends=('m4' 'libtool')
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+options=('!docs')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('ee13d052e1ead260d7c28071f46eefb1')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX \
+    --enable-widec \
+    --with-cxx-binding \
+    --with-cxx-shared \
+    --enable-pc-files \
+    --with-pkg-config-libdir=$BUILD_PREFIX/lib/pkgconfig \
+    --with-shared \
+    --without-normal \
+    --with-termpath=$BUILD_ROOTDIR/share/terminfo \
+    --with-default-terminfo-dir=$BUILD_ROOTDIR/share/terminfo
+
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  # Handle non-widec builds
+  for lib in ncurses ncurses++ form panel menu; do
+    ln -s lib${lib}w.dylib "$pkgdir${BUILD_PREFIX}/lib/lib${lib}.dylib"
+    ln -s ${lib}w.pc "$pkgdir${BUILD_PREFIX}/lib/pkgconfig/${lib}.pc"
+  done
+
+  ln -s libncurses.dylib "$pkgdir${BUILD_PREFIX}/lib/libtermcap.dylib"
+  ln -s ncursesw6-config "$pkgdir${BUILD_PREFIX}/bin/ncurses6-config"
+
+
+  # Copy terminfo from fake root to real root
+  cp -a "${pkgdir}${BUILD_ROOTDIR}/share" "${pkgdir}${BUILD_PREFIX}"
+
+  # Remove fake root directory
+  pushd "$pkgdir" &>/dev/null
+    rm -rf ./$(echo ${BUILD_ROOTDIR:1} | awk -F '/' '{ print $1 }')
+  popd &>/dev/null
+  fix_rpath
+}
+# vim:set ts=2 sw=2 et:

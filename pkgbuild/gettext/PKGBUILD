@@ -1,0 +1,37 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=gettext
+pkgver=0.19.8.1
+pkgrel=1
+epoch=
+pkgdesc="GNU translation framework"
+arch=('x86_64')
+url="https://www.gnu.org/software/gettext"
+license=('GPL')
+groups=('base-devel')
+depends=('libiconv')
+makedepends=('m4' 'libtool' 'libiconv' 'ncurses' 'libxml2')
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+options=('!libtool')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('97e034cf8ce5ba73a28ff6c3c0638092')
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}

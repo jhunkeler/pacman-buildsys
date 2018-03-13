@@ -1,0 +1,41 @@
+pkgname=filesystem
+pkgver=2017.10
+pkgrel=1
+pkgdesc='Base Arch Linux files'
+arch=('x86_64')
+license=('GPL')
+url='https://www.archlinux.org'
+groups=('base')
+
+package() {
+  chmod 755 $pkgdir
+  mkdir -p "$pkgdir/$BUILD_PREFIX"
+  cd "$pkgdir/$BUILD_PREFIX"
+
+  # setup root filesystem
+  for d in etc var opt; do
+    install -d -m755 $d
+  done
+
+  # setup /var
+  for d in cache lock local opt lib/misc empty; do
+    install -d -m755 var/$d
+  done
+
+  # setup application hierarchy
+  for d in bin include lib share/misc src; do
+    install -d -m755 $d
+  done
+
+  # setup man page levels
+  for d in {1..8}; do
+    install -d -m755 share/man/man$d
+  done
+
+  # add lib symlinks
+  [[ $CARCH = 'x86_64' ]] && {
+    ln -s lib lib64
+  }
+}
+
+# vim:set ts=2 sw=2 et:

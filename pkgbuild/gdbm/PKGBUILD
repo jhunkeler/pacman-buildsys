@@ -1,0 +1,46 @@
+# $Id$
+# Maintainer:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Stéphane Gaudreault <stephane@archlinux.org>
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: judd <jvinet@zeroflux.org>
+
+pkgname=gdbm
+pkgver=1.14.1
+pkgrel=1
+pkgdesc='GNU database library'
+url='http://www.gnu.org/software/gdbm/gdbm.html'
+license=(GPL3)
+arch=(x86_64)
+depends=()
+options=()
+source=(http://ftp.gnu.org/gnu/gdbm/${pkgname}-${pkgver}.tar.gz{,.sig})
+validpgpkeys=('325F650C4C2B6AD58807327A3602B07F55D0C732')
+md5sums=('c2ddcb3897efa0f57484af2bd4f4f848'
+         'SKIP')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=$BUILD_PREFIX \
+    --enable-libgdbm-compat \
+    --with-libiconv-prefix=$BUILD_ROOTDIR \
+    --with-libintl-prefix=$BUILD_ROOTDIR
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  #make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+
+  # create symlinks for compatibility
+  install -dm755 "$pkgdir${BUILD_PREFIX}/include/gdbm"
+  ln -sf ../gdbm.h "$pkgdir${BUILD_PREFIX}/include/gdbm/gdbm.h"
+  ln -sf ../ndbm.h "$pkgdir${BUILD_PREFIX}/include/gdbm/ndbm.h"
+  ln -sf ../dbm.h  "$pkgdir${BUILD_PREFIX}/include/gdbm/dbm.h"
+}
+

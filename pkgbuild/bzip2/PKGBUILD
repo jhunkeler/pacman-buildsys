@@ -1,0 +1,40 @@
+# $Id$
+# Maintainer: Pierre Schmitz <pierre@archlinux.de>
+
+pkgname=bzip2
+epoch=
+pkgver=1.0.6
+pkgrel=1
+pkgdesc='Compression library implementing the deflate compression method found in gzip and PKZIP'
+arch=('x86_64')
+license=('custom')
+url="http://www.bzip2.org"
+depends=()
+makedepends=('autoconf' 'automake')
+options=('staticlibs')  # needed by binutils testsuite
+source=("http://www.bzip.org/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('00b516f4704d4a7cb50a1d97e6e8e15b')
+
+prepare() {
+	cd ${srcdir}/$pkgname-$pkgver
+        for p in ${startdir}/*.patch
+        do
+            patch -Np0 < $p
+        done
+}
+
+build() {
+	cd ${srcdir}/$pkgname-$pkgver
+        make -f Makefile-libbz2_so PREFIX=$BUILD_PREFIX
+}
+
+check() {
+	cd ${srcdir}/$pkgname-$pkgver
+	make test
+}
+
+package() {
+	cd ${srcdir}/$pkgname-$pkgver
+	make install PREFIX=${pkgdir}${BUILD_PREFIX}
+        fix_rpath
+}

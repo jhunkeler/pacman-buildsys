@@ -1,0 +1,42 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=libxml2
+pkgver=2.9.7
+pkgrel=1
+epoch=
+pkgdesc="Libxml2 is the XML C parser and toolkit developed for the Gnome project"
+arch=('x86_64')
+url="https://xmlsoft.org"
+license=('MIT')
+groups=('base-devel')
+depends=('xz')
+makedepends=()
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+options=('!docs')
+source=("ftp://xmlsoft.org/$pkgname/$pkgname-$pkgver.tar.gz")
+md5sums=('896608641a08b465098a40ddf51cefba')
+
+build() {
+  cd "$pkgname-$pkgver"
+  export PKG_CONFIG_PATH=$BUILD_ROOTDIR/lib/pkgconfig
+  export CFLAGS="$CFLAGS -I$BUILD_ROOTDIR/include"
+  export LDFLAGS="$LDFLAGS -L$BUILD_ROOTDIR/lib"
+  ./configure --prefix=$BUILD_PREFIX \
+    --without-python
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+# vim:set ts=2 sw=2 et:

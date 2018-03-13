@@ -1,0 +1,31 @@
+pkgname=gzip
+pkgver=1.9
+pkgrel=1
+pkgdesc='Data compression program'
+arch=('x86_64')
+url='https://www.gnu.org/software/gzip'
+license=('GPL3')
+groups=('base')
+depends=()
+options=()
+source=("https://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('9492c6ccb2239ff679a5475a7bb543ed')
+
+build() {
+  cd $pkgname-$pkgver
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd $pkgname-$pkgver
+  #make check
+}
+
+package() {
+  cd $pkgname-$pkgver
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+
+# vim:set ts=2 sw=2 et:

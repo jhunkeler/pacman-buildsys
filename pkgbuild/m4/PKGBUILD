@@ -1,0 +1,44 @@
+# Maintainer: Joseph Hunkeler <jhunk@stsci.edu>
+pkgname=m4
+pkgver=1.4.18
+pkgrel=1
+epoch=
+pkgdesc="GNU Macro language"
+arch=('x86_64')
+url="https://www.gnu.org/software/m4/m4.html"
+license=('GPL')
+groups=('base-devel')
+depends=()
+makedepends=()
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+noextract=()
+md5sums=('a077779db287adf4e12a035029002d28')
+validpgpkeys=()
+
+build() {
+  cd "$pkgname-$pkgver"
+  ./configure --prefix=$BUILD_PREFIX
+  make
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+  #make -k check
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+  make DESTDIR="$pkgdir" install
+  fix_rpath
+}
+
+# vim:set ts=2 sw=2 et:
