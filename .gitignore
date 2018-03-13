@@ -1,4 +1,8 @@
 build
 src
 lock_files
+pkgbuild/*/pkg
+pkgbuild/*/*.tar*
+pkgbuild/*/*.zip
+pkgbuild/*/*.7z
 
